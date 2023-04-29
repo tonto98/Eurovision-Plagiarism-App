@@ -49,8 +49,8 @@ class _AuthPageState extends State<AuthPage> {
           child: Container(),
         ),
         ElevatedButton(
-          onPressed: () {
-            ApplicationCore()
+          onPressed: () async {
+            await ApplicationCore()
                 .authBloc
                 .logIn(username: _usernameController.text);
           },

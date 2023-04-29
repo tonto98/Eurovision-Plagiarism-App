@@ -1,23 +1,44 @@
 class Country {
-  int id;
-  String code;
-  String name;
-  String artist;
-  String song;
-  String songUrl;
+  String? artist;
+  String? code;
+  int? id;
+  bool? inFinal;
+  String? name;
+  int? order;
+  String? song;
+  String? songUrl;
 
-  Country({
-    required this.id,
-    required this.code,
-    required this.name,
-    required this.artist,
-    required this.song,
-    required this.songUrl,
-  });
-}
+  Country(
+      {this.artist,
+      this.code,
+      this.id,
+      this.inFinal,
+      this.name,
+      this.order,
+      this.song,
+      this.songUrl});
 
-class Score {
-  int countryId;
-  double points;
-  Score(this.countryId, this.points);
+  Country.fromJson(Map<String, dynamic> json) {
+    artist = json['artist'];
+    code = json['code'];
+    id = json['id'];
+    inFinal = json['inFinal'];
+    name = json['name'];
+    order = json['order'];
+    song = json['song'];
+    songUrl = json['songUrl'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['artist'] = this.artist;
+    data['code'] = this.code;
+    data['id'] = this.id;
+    data['inFinal'] = this.inFinal;
+    data['name'] = this.name;
+    data['order'] = this.order;
+    data['song'] = this.song;
+    data['songUrl'] = this.songUrl;
+    return data;
+  }
 }

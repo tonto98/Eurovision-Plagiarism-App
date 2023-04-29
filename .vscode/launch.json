@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flutter mozzila",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "-d",
+                "web-server",
+                "--web-port",
+                "7357"
+            ],
+        },
+        {
+            "name": "Flutter Chrome",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "-d",
+                "chrome",
+                "--web-port",
+                "7357",
+                "--web-renderer",
+                "canvaskit"
+            ],
+        }
+    ]
+}
