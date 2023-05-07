@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:eurovision_app/blocs/auth/auth_state.dart';
 import 'package:eurovision_app/models/user.dart';
 import 'package:eurovision_app/repository/auth_repo.dart';
@@ -41,6 +43,10 @@ class AuthBloc extends Cubit<AuthState> {
     } catch (e) {
       emit(AuthStateFail());
     }
+  }
+
+  void refresnUserData() {
+    logIn(username: username!);
   }
 
   void logOut() {

@@ -14,10 +14,10 @@ class User {
     email = json['email'];
     id = json['id'];
     username = json['username'];
-    if (json['votes'] != null) {
-      if ((json['votes'] as List).isNotEmpty) {
+    if (json['points'] != null) {
+      if ((json['points'] as List).isNotEmpty) {
         pointVotes = <PointVote>[];
-        json['votes'].forEach((v) {
+        json['points'].forEach((v) {
           pointVotes.add(PointVote.fromJson(v));
         });
       } else {
@@ -31,7 +31,7 @@ class User {
     data['email'] = email;
     data['id'] = id;
     data['username'] = username;
-    data['votes'] = pointVotes.map((v) => v.toJson()).toList();
+    data['points'] = pointVotes.map((v) => v.toJson()).toList();
 
     return data;
   }
