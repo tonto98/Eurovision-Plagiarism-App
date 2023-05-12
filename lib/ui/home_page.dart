@@ -1,6 +1,7 @@
 import 'package:eurovision_app/blocs/countries/countries_bloc.dart';
 import 'package:eurovision_app/blocs/countries/countries_state.dart';
 import 'package:eurovision_app/core/app_core.dart';
+import 'package:eurovision_app/ui/ordering_page.dart';
 import 'package:eurovision_app/ui/voting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,17 +32,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          const SliverAppBar(
-            backgroundColor: Colors.amber,
-            title: Text('tu stavit lijepu sliku \nsa tekstom stagod'),
-            expandedHeight: 30,
-            collapsedHeight: 150,
-          ),
-          SliverAppBar(
-            backgroundColor: Colors.green,
-            title: Row(
+      // backgroundColor: Colors.red,
+      appBar: AppBar(
+        backgroundColor: Colors.amber,
+        title: Column(
+          children: [
+            Text('aaaaaaaaaa'),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
@@ -54,7 +51,6 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    ApplicationCore().authBloc.logOut();
                     setState(() {
                       contentIndex = 1;
                     });
@@ -63,42 +59,10 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            floating: true,
-          ),
-          _getContent(),
-        ],
+          ],
+        ),
       ),
-    );
-  }
-}
-
-class OrderContent extends StatelessWidget {
-  const OrderContent({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<CountriesBloc, CountriesState>(
-      builder: (context, state) {
-        return SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return Card(
-                margin: const EdgeInsets.all(15),
-                child: Container(
-                  color: Colors.red[100 * (index % 9 + 1)],
-                  height: 80,
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Item $index",
-                    style: const TextStyle(fontSize: 30),
-                  ),
-                ),
-              );
-            },
-            childCount: 1000, // 1000 list items
-          ),
-        );
-      },
+      body: _getContent(),
     );
   }
 }

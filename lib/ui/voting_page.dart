@@ -15,24 +15,14 @@ class VotingContent extends StatelessWidget {
       bloc: ApplicationCore().countriesBloc,
       builder: (context, state) {
         if (state is CountriesSuccess) {
-          return SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return CountryItemWidget(country: state.countries[index]);
-              },
-              childCount: state.countries.length,
-            ),
-          );
+          return ListView(
+              children: List.generate(
+                  state.countries.length,
+                  (index) =>
+                      CountryItemWidget(country: state.countries[index])));
         } else {
-          return SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Container(
-                  child: Text("error :c"),
-                );
-              },
-              childCount: 1,
-            ),
+          return Container(
+            child: Text("error :c"),
           );
         }
       },
@@ -65,65 +55,135 @@ class _CountryItemWidgetState extends State<CountryItemWidget> {
         );
       },
       child: Container(
-        height: 80,
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        height: 100,
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(0, 1), // changes position of shadow
+            ),
+          ],
+        ),
         child: Row(
           children: [
             Expanded(
               flex: 30,
               child: Container(
-                color: Colors.blue,
-                child: Center(
-                  child: Text(widget.country.code ?? "??"),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: Image.asset("assets/artists/HR.png").image,
+                  ),
                 ),
+                // child: Image.asset("assets/artists/HR.png"),
               ),
             ),
             Expanded(
               flex: 50,
-              child: Container(
-                color: Colors.red,
-                child: Center(
-                  child: Column(
-                    children: [
-                      Text(widget.country.name!),
-                      Text(widget.country.artist!),
-                      Text(widget.country.song!),
-                    ],
-                  ),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.country.name!,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      widget.country.artist!,
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      widget.country.song!,
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
             Expanded(
               flex: 20,
-              child: Container(
-                color: Colors.yellow,
-                child: Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      (ApplicationCore()
-                                  .authBloc
-                                  .getPointsForCountry(widget.country.id!) ??
-                              0)
-                          .toString(),
-                      style: TextStyle(color: Colors.transparent),
+              child: Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(),
+                  Container(
+                    height: 52,
+                    width: 52,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.fromRGBO(255, 0, 255, 1),
                     ),
-                    Container(
-                      height: 40,
-                      width: 40,
-                      color: Colors.green,
+                    child: Center(
+                      child: Container(
+                        height: 45,
+                        width: 45,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: Center(
+                          child: Container(
+                            height: 38,
+                            width: 38,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromRGBO(255, 0, 255, 1),
+                            ),
+                            child: Center(
+                              child: FittedBox(
+                                fit: BoxFit.cover,
+                                child: ApplicationCore()
+                                            .authBloc
+                                            .getPointsForCountry(
+                                                widget.country.id!) ==
+                                        null
+                                    ? const Icon(
+                                        Icons.arrow_right_alt_rounded,
+                                        color: Colors.white,
+                                      )
+                                    : Text(
+                                        ApplicationCore()
+                                            .authBloc
+                                            .getPointsForCountry(
+                                                widget.country.id!)
+                                            .toString(),
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    Text(
-                      (ApplicationCore()
-                                  .authBloc
-                                  .getPointsForCountry(widget.country.id!) ??
-                              0)
-                          .toString(),
-                    ),
-                  ],
-                )),
-              ),
+                  ),
+                  Container(),
+                  // Text(
+                  //   (ApplicationCore()
+                  //               .authBloc
+                  //               .getPointsForCountry(widget.country.id!) ??
+                  //           0)
+                  //       .toString(),
+                  // ),
+                ],
+              )),
             ),
           ],
         ),
