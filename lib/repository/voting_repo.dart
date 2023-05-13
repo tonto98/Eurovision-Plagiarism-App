@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:eurovision_app/core/app_core.dart';
+import 'package:eurovision_app/core/constants.dart';
 import 'package:eurovision_app/models/user.dart';
 
 class VotingRepository {
@@ -8,7 +9,7 @@ class VotingRepository {
       final dio = Dio();
       dio.options.headers = ApplicationCore.headers;
       final res = await dio.post(
-        "http://127.0.0.1:5000/reviews/points",
+        "$baseUrl/reviews/points",
         data: {
           "id": ApplicationCore().authBloc.user!.id,
           "countryId": countryId,
@@ -36,7 +37,7 @@ class VotingRepository {
       final dio = Dio();
       dio.options.headers = ApplicationCore.headers;
       final res = await dio.post(
-        "http://127.0.0.1:5000/reviews/order",
+        "$baseUrl/reviews/order",
         data: {
           "id": ApplicationCore().authBloc.user!.id,
           "orderlist":

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:eurovision_app/core/app_core.dart';
+import 'package:eurovision_app/core/constants.dart';
 import 'package:eurovision_app/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
@@ -17,7 +18,7 @@ class AuthRepository {
       final dio = Dio();
       dio.options.headers = ApplicationCore.headers;
       final res = await dio.post(
-        "http://127.0.0.1:5000/users",
+        "$baseUrl/users",
         data: {"username": username},
       );
       if (res.statusCode == 200) {
