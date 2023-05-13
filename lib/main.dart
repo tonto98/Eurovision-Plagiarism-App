@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         // appBar: AppBar(
         //   backgroundColor: const Color.fromRGBO(254, 213, 0, 1),

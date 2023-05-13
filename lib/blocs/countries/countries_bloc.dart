@@ -22,4 +22,8 @@ class CountriesBloc extends Cubit<CountriesState> {
   void updateCountriesState() {
     emit(CountriesSuccess(countries));
   }
+
+  Country getCountryById(int id) {
+    return countries.firstWhere((element) => element.id == id);
+  }
 }

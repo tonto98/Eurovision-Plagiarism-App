@@ -1,9 +1,13 @@
 import 'package:eurovision_app/blocs/voting/voting_bloc.dart';
 import 'package:eurovision_app/blocs/voting/voting_state.dart';
 import 'package:eurovision_app/core/app_core.dart';
+import 'package:eurovision_app/core/constants.dart';
 import 'package:eurovision_app/models/country.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'lyrics_page.dart';
 
 class CountryPage extends StatefulWidget {
   final Country country;
@@ -16,27 +20,133 @@ class CountryPage extends StatefulWidget {
   State<CountryPage> createState() => _CountryPageState();
 }
 
+Future<void> _launchUrl(String song) async {
+  List<String> words = song.split(" ");
+  String query = "";
+  for (var word in words) {
+    query += (word + "+");
+  }
+
+  String search = "https://www.youtube.com/results?search_query=$query";
+  if (!await launchUrl(Uri.parse(search))) {
+    print(":/");
+    // throw Exception('Could not launch $url');
+  }
+}
+
 class _CountryPageState extends State<CountryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
+      body: Stack(
         children: [
-          Container(
-            height: 200,
-            width: double.infinity,
-            color: Colors.red,
-            child: Center(
-              child: Text("header sa naslovom xdd \n\n${widget.country.name}"),
-            ),
+          Column(
+            children: [
+              Container(
+                height: 200,
+                width: double.infinity,
+                child: Image.asset(
+                  "assets/artists/${widget.country.code}.jpg",
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                widget.country.artist!,
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                widget.country.song!,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      _launchUrl(widget.country.song!);
+                    },
+                    child: Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        color: euroBlue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.play_arrow,
+                          color: euroPink,
+                          size: 50,
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return LyricsPage(country: widget.country);
+                    })),
+                    child: Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        color: euroBlue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.lyrics,
+                          color: euroPink,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              ScoringWidget(
+                countryId: widget.country.id!,
+              )
+            ],
           ),
-          Text(widget.country.artist!),
-          Text(widget.country.song!),
-          Text(
-              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."),
-          ScoringWidget(
-            countryId: widget.country.id!,
+          Positioned(
+            top: 10,
+            left: 10,
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                height: 45,
+                width: 45,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: euroBlue,
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: euroPink,
+                  ),
+                ),
+              ),
+            ),
           )
         ],
       ),
@@ -74,66 +184,42 @@ class _ScoringWidgetState extends State<ScoringWidget> {
         }
         return IgnorePointer(
           ignoring: isLoading,
-          child: Stack(
-            children: [
-              Opacity(
-                opacity: isLoading ? 0.5 : 1,
-                child: Column(
-                  children: [
-                    Row(
-                      children: List.generate(
-                        5,
-                        (index) => ScoringButton(
-                          index + 1,
-                          isSelected: (index + 1) ==
-                              ApplicationCore()
-                                  .authBloc
-                                  .getPointsForCountry(widget.countryId),
-                          onTap: onTap,
-                        ),
+          child: Opacity(
+            opacity: isLoading ? 0.5 : 1,
+            child: Center(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                      5,
+                      (index) => ScoringButton(
+                        index + 1,
+                        isSelected: (index + 1) ==
+                            ApplicationCore()
+                                .authBloc
+                                .getPointsForCountry(widget.countryId),
+                        onTap: onTap,
                       ),
                     ),
-                    Row(
-                      children: List.generate(
-                        5,
-                        (index) => ScoringButton(
-                          index + 6,
-                          isSelected: (index + 6) ==
-                              ApplicationCore()
-                                  .authBloc
-                                  .getPointsForCountry(widget.countryId),
-                          onTap: onTap,
-                        ),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                      5,
+                      (index) => ScoringButton(
+                        index + 6,
+                        isSelected: (index + 6) ==
+                            ApplicationCore()
+                                .authBloc
+                                .getPointsForCountry(widget.countryId),
+                        onTap: onTap,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              // isLoading
-              //     ? Container(
-              //         height: 80,
-              //         width: 5 * 44,
-              //         decoration: BoxDecoration(
-              //           color: Colors.transparent,
-              //           borderRadius: const BorderRadius.only(
-              //             topLeft: Radius.circular(10),
-              //             topRight: Radius.circular(10),
-              //             bottomLeft: Radius.circular(10),
-              //             bottomRight: Radius.circular(10),
-              //           ),
-              //           boxShadow: [
-              //             BoxShadow(
-              //               color: Colors.grey.withOpacity(0.5),
-              //               spreadRadius: 5,
-              //               blurRadius: 7,
-              //               offset: const Offset(
-              //                   0, 0), // changes position of shadow
-              //             ),
-              //           ],
-              //         ),
-              //       )
-              //     : Container()
-            ],
+            ),
           ),
         );
       },
@@ -159,18 +245,27 @@ class ScoringButton extends StatelessWidget {
         onTap(point);
       },
       child: Container(
-        margin: const EdgeInsets.all(4),
+        margin: const EdgeInsets.all(10),
         padding: const EdgeInsets.all(4),
-        height: 35,
-        width: 35,
+        height: 48,
+        width: 48,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(9999),
-          border: Border.all(width: 1, color: Colors.black),
-          color: isSelected ? Colors.blue[300] : Colors.white,
+          // border: Border.all(width: 1, color: Colors.black),
+          color: isSelected ? euroYellow : Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 4,
+              offset: Offset(0, 1), // changes position of shadow
+            ),
+          ],
         ),
         child: Center(
           child: Text(
             point.toString(),
+            style: TextStyle(fontSize: 22),
           ),
         ),
       ),

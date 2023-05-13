@@ -1,10 +1,12 @@
 import 'package:eurovision_app/blocs/countries/countries_bloc.dart';
 import 'package:eurovision_app/blocs/countries/countries_state.dart';
 import 'package:eurovision_app/core/app_core.dart';
+import 'package:eurovision_app/core/constants.dart';
 import 'package:eurovision_app/models/country.dart';
 import 'package:eurovision_app/ui/country_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class VotingContent extends StatelessWidget {
   const VotingContent({super.key});
@@ -74,14 +76,40 @@ class _CountryItemWidgetState extends State<CountryItemWidget> {
           children: [
             Expanded(
               flex: 30,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: Image.asset("assets/artists/HR.png").image,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: Image.asset(
+                                "assets/artists/${widget.country.code!.toUpperCase()}.jpg")
+                            .image,
+                      ),
+                    ),
+                    // child: Image.asset("assets/artists/HR.png"),
                   ),
-                ),
-                // child: Image.asset("assets/artists/HR.png"),
+                  Positioned(
+                    bottom: 1,
+                    right: 1,
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                      ),
+                      child: SvgPicture.asset(
+                        "assets/flags/${widget.country.code!.toUpperCase()}.svg",
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
             Expanded(
@@ -102,14 +130,15 @@ class _CountryItemWidgetState extends State<CountryItemWidget> {
                     Text(
                       widget.country.artist!,
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                       ),
                     ),
                     Text(
                       widget.country.song!,
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                       ),
+                      maxLines: 2,
                     ),
                   ],
                 ),
@@ -125,15 +154,20 @@ class _CountryItemWidgetState extends State<CountryItemWidget> {
                   Container(
                     height: 52,
                     width: 52,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Color.fromRGBO(255, 0, 255, 1),
+                      color: ApplicationCore()
+                                  .authBloc
+                                  .getPointsForCountry(widget.country.id!) ==
+                              null
+                          ? euroPink
+                          : euroBlue,
                     ),
                     child: Center(
                       child: Container(
                         height: 45,
                         width: 45,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
                         ),
@@ -141,9 +175,15 @@ class _CountryItemWidgetState extends State<CountryItemWidget> {
                           child: Container(
                             height: 38,
                             width: 38,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Color.fromRGBO(255, 0, 255, 1),
+                              color: ApplicationCore()
+                                          .authBloc
+                                          .getPointsForCountry(
+                                              widget.country.id!) ==
+                                      null
+                                  ? euroPink
+                                  : euroBlue,
                             ),
                             child: Center(
                               child: FittedBox(
@@ -156,6 +196,7 @@ class _CountryItemWidgetState extends State<CountryItemWidget> {
                                     ? const Icon(
                                         Icons.arrow_right_alt_rounded,
                                         color: Colors.white,
+                                        size: 35,
                                       )
                                     : Text(
                                         ApplicationCore()
@@ -164,8 +205,10 @@ class _CountryItemWidgetState extends State<CountryItemWidget> {
                                                 widget.country.id!)
                                             .toString(),
                                         style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        ),
                                       ),
                               ),
                             ),

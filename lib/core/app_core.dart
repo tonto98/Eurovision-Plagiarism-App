@@ -1,5 +1,6 @@
 import 'package:eurovision_app/blocs/auth/auth_bloc.dart';
 import 'package:eurovision_app/blocs/countries/countries_bloc.dart';
+import 'package:eurovision_app/blocs/results/results_bloc.dart';
 
 class ApplicationCore {
   static final ApplicationCore _instance = ApplicationCore._internal();
@@ -10,6 +11,7 @@ class ApplicationCore {
 
   final AuthBloc authBloc = AuthBloc();
   final CountriesBloc countriesBloc = CountriesBloc();
+  final ResultsBloc resultsBloc = ResultsBloc();
 
   static Map<String, String> headers = {
     "Accept": "application/json",

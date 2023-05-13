@@ -1,4 +1,5 @@
 import 'package:eurovision_app/core/app_core.dart';
+import 'package:eurovision_app/core/constants.dart';
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {
@@ -23,22 +24,12 @@ class _AuthPageState extends State<AuthPage> {
           flex: 5,
           child: Container(),
         ),
-        const Padding(
-          padding: EdgeInsets.all(20.0),
-          child: Text(
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18),
-          ),
-        ),
-        Expanded(
-          flex: 5,
-          child: Container(),
-        ),
-        Expanded(
-          flex: 15,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Container(
+            padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+            decoration: BoxDecoration(
+                border: Border.all(), borderRadius: BorderRadius.circular(12)),
             child: TextField(
               controller: _usernameController,
             ),
@@ -48,14 +39,36 @@ class _AuthPageState extends State<AuthPage> {
           flex: 5,
           child: Container(),
         ),
-        ElevatedButton(
-          onPressed: () async {
+        GestureDetector(
+          onTap: () async {
             await ApplicationCore()
                 .authBloc
                 .logIn(username: _usernameController.text);
           },
-          child: Text("NEXT"),
+          child: Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              color: euroBlue,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Icon(
+                Icons.play_arrow,
+                color: euroPink,
+                size: 50,
+              ),
+            ),
+          ),
         ),
+        // ElevatedButton(
+        //   onPressed: () async {
+        //     await ApplicationCore()
+        //         .authBloc
+        //         .logIn(username: _usernameController.text);
+        //   },
+        //   child: Text("NEXT"),
+        // ),
         Expanded(
           flex: 25,
           child: Container(),
