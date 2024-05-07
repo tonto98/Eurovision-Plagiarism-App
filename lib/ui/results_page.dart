@@ -18,6 +18,12 @@ class ResultsPage extends StatefulWidget {
 }
 
 class _ResultsPageState extends State<ResultsPage> {
+  @override
+  void initState() {
+    ApplicationCore().resultsBloc.getResults();
+    super.initState();
+  }
+
   int _contentIndex = 0;
   @override
   Widget build(BuildContext context) {

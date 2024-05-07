@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Country {
   String? artist;
   String? code;
@@ -7,16 +9,19 @@ class Country {
   int? order;
   String? song;
   String? songUrl;
+  Map<String, int>? pointList;
 
-  Country(
-      {this.artist,
-      this.code,
-      this.id,
-      this.inFinal,
-      this.name,
-      this.order,
-      this.song,
-      this.songUrl});
+  Country({
+    this.artist,
+    this.code,
+    this.id,
+    this.inFinal,
+    this.name,
+    this.order,
+    this.song,
+    this.songUrl,
+    this.pointList,
+  });
 
   Country.fromJson(Map<String, dynamic> json) {
     artist = json['artist'];
@@ -27,6 +32,16 @@ class Country {
     order = json['order'];
     song = json['song'];
     songUrl = json['songUrl'];
+    try {
+      pointList = {};
+      Map<String, dynamic> jsonMap = json["pointlist"];
+      print(jsonMap);
+      jsonMap.forEach((key, value) {
+        pointList![key] = value as int;
+      });
+    } catch (e) {
+      pointList = null;
+    }
   }
 
   Map<String, dynamic> toJson() {

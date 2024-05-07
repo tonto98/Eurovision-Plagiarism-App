@@ -3,6 +3,8 @@ import 'package:eurovision_app/blocs/voting/voting_state.dart';
 import 'package:eurovision_app/core/app_core.dart';
 import 'package:eurovision_app/core/constants.dart';
 import 'package:eurovision_app/models/country.dart';
+import 'package:eurovision_app/repository/countries_repo.dart';
+import 'package:eurovision_app/ui/chart_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,111 +23,137 @@ class CountryPage extends StatefulWidget {
 }
 
 Future<void> _launchUrl(String song) async {
-  List<String> words = song.split(" ");
-  String query = "";
-  for (var word in words) {
-    query += (word + "+");
-  }
-
-  String search = "https://www.youtube.com/results?search_query=$query";
-  if (!await launchUrl(Uri.parse(search))) {
+  if (!await launchUrl(Uri.parse(song))) {
     print(":/");
     // throw Exception('Could not launch $url');
   }
 }
 
 class _CountryPageState extends State<CountryPage> {
+  Map<String, int>? points;
+  @override
+  void initState() {
+    _getCountryPoints();
+    super.initState();
+  }
+
+  Future<void> _getCountryPoints() async {
+    int? vote =
+        ApplicationCore().authBloc.getPointsForCountry(widget.country.id!);
+    if (vote != null) {
+      Country? country =
+          await CountriesRepository.getCountryById(widget.country.id!);
+      if (country.pointList != null) {
+        points = country.pointList;
+        setState(() {});
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          Column(
-            children: [
-              Container(
-                height: 200,
-                width: double.infinity,
-                child: Image.asset(
-                  "assets/artists/${widget.country.code}.jpg",
-                  fit: BoxFit.cover,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                widget.country.artist!,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                widget.country.song!,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      _launchUrl(widget.country.song!);
-                    },
-                    child: Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                        color: euroBlue,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.play_arrow,
-                          color: euroPink,
-                          size: 50,
-                        ),
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      child: Image.asset(
+                        "assets/artists/${widget.country.code}.jpg",
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return LyricsPage(country: widget.country);
-                    })),
-                    child: Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                        color: euroBlue,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.lyrics,
-                          color: euroPink,
-                          size: 40,
-                        ),
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _launchUrl(widget.country.songUrl!);
+                            },
+                            child: Container(
+                              height: 60,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                color: euroBlue,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.play_arrow,
+                                  color: euroPink,
+                                  size: 50,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          GestureDetector(
+                            onTap: () => Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return LyricsPage(country: widget.country);
+                            })),
+                            child: Container(
+                              height: 60,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                color: euroBlue,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.lyrics,
+                                  color: euroPink,
+                                  size: 40,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  widget.country.artist!,
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w600,
                   ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              ScoringWidget(
-                countryId: widget.country.id!,
-              )
-            ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  widget.country.song!,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                ScoringWidget(
+                  countryId: widget.country.id!,
+                  refresh: _getCountryPoints,
+                ),
+                ChartWidget(pointList: points, id: widget.country.id!),
+              ],
+            ),
           ),
           Positioned(
             top: 10,
@@ -155,10 +183,12 @@ class _CountryPageState extends State<CountryPage> {
 }
 
 class ScoringWidget extends StatefulWidget {
+  final VoidCallback refresh;
   final int countryId;
   const ScoringWidget({
     super.key,
     required this.countryId,
+    required this.refresh,
   });
 
   @override
@@ -174,7 +204,10 @@ class _ScoringWidgetState extends State<ScoringWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<VotingBloc, VotingState>(
+    return BlocConsumer<VotingBloc, VotingState>(
+      listener: (context, state) {
+        widget.refresh();
+      },
       bloc: votingBloc,
       builder: (context, state) {
         if (state is VotingLoading) {
