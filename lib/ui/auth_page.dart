@@ -15,14 +15,19 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Image.asset("assets/esc_logo_big.jpg"),
         Expanded(
-          flex: 5,
-          child: Container(),
-        ),
-        Expanded(flex: 30, child: Image.asset("assets/esc-logo-big.png")),
-        Expanded(
-          flex: 5,
-          child: Container(),
+          flex: 1,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 36.0),
+              child: Text(
+                "Dobrodošli na našu aplikaciju za interni odabir pjesme za Euroviziju! \nMolimo vas da unesete svoje korisničko ime kako biste mogli glasati.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+            ),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -31,19 +36,26 @@ class _AuthPageState extends State<AuthPage> {
             decoration: BoxDecoration(
                 border: Border.all(), borderRadius: BorderRadius.circular(12)),
             child: TextField(
+              decoration: InputDecoration(hintText: "Korisničko ime"),
               controller: _usernameController,
             ),
           ),
         ),
-        Expanded(
-          flex: 5,
-          child: Container(),
+        SizedBox(
+          height: 20,
         ),
         GestureDetector(
           onTap: () async {
-            await ApplicationCore()
-                .authBloc
-                .logIn(username: _usernameController.text);
+            if (_usernameController.text.isNotEmpty) {
+              await ApplicationCore()
+                  .authBloc
+                  .logIn(username: _usernameController.text);
+            } else {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                    SnackBar(content: Text("Barem neko ime smisli!")));
+            }
           },
           child: Container(
             height: 60,
@@ -69,9 +81,15 @@ class _AuthPageState extends State<AuthPage> {
         //   },
         //   child: Text("NEXT"),
         // ),
+
         Expanded(
-          flex: 25,
-          child: Container(),
+          flex: 2,
+          child: Center(
+            child: Text(
+              "Hvala vam na sudjelovanju! <3",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+            ),
+          ),
         ),
       ],
     );

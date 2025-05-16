@@ -8,20 +8,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OrderContent extends StatefulWidget {
-  const OrderContent({super.key});
+  final OrderingBloc orderingBloc;
+  const OrderContent({
+    super.key,
+    required this.orderingBloc,
+  });
 
   @override
   State<OrderContent> createState() => _OrderContentState();
 }
 
 class _OrderContentState extends State<OrderContent> {
-  OrderingBloc orderingBloc = OrderingBloc();
   bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OrderingBloc, OrderingState>(
-      bloc: orderingBloc,
+      bloc: widget.orderingBloc,
       builder: (context, state) {
         if (state is OrderingReady) {
           _isLoading = false;
@@ -35,16 +38,17 @@ class _OrderContentState extends State<OrderContent> {
             child: ReorderableListView(
               buildDefaultDragHandles: false,
               onReorder: (oldIndex, newIndex) {
-                orderingBloc.onOrderUpdate(oldIndex, newIndex);
+                widget.orderingBloc.onOrderUpdate(oldIndex, newIndex);
               },
               children: List.generate(
-                orderingBloc.orders.length,
+                widget.orderingBloc.orders.length,
                 (index) {
                   Country country = ApplicationCore()
                       .countriesBloc
-                      .getCountryById(orderingBloc.orders[index].countryId);
+                      .getCountryById(
+                          widget.orderingBloc.orders[index].countryId);
                   return Stack(
-                    key: ValueKey(orderingBloc.orders[index]),
+                    key: ValueKey(widget.orderingBloc.orders[index]),
                     children: [
                       // margin: const EdgeInsets.all(15),
                       Container(
@@ -174,7 +178,9 @@ class _OrderContentState extends State<OrderContent> {
                                                   child: FittedBox(
                                                     fit: BoxFit.cover,
                                                     child: Text(
-                                                      orderingBloc.orders[index]
+                                                      widget
+                                                          .orderingBloc
+                                                          .orders[index]
                                                           .orderNumber
                                                           .toString(),
                                                       style: const TextStyle(

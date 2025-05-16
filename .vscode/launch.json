@@ -20,9 +20,7 @@
                 "-d",
                 "chrome",
                 "--web-port",
-                "7357",
-                "--web-renderer",
-                "canvaskit"
+                "7357"
             ],
         }
     ]

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:dio/dio.dart';
 import 'package:eurovision_app/core/app_core.dart';
 import 'package:eurovision_app/core/constants.dart';
 import 'package:fl_chart/fl_chart.dart';

@@ -56,4 +56,9 @@ class Country {
     data['songUrl'] = this.songUrl;
     return data;
   }
+
+  @override
+  String toString() {
+    return "$id$name";
+  }
 }

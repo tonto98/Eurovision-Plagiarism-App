@@ -48,6 +48,9 @@ class _ResultsPageState extends State<ResultsPage> {
             )
           ],
         ),
+        leading: BackButton(
+          color: Colors.white,
+        ),
       ),
       body: Column(
         children: [
