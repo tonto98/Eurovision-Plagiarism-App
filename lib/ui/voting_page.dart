@@ -131,14 +131,16 @@ class _CountryItemWidgetState extends State<CountryItemWidget> {
                       widget.country.artist!,
                       style: TextStyle(
                         fontSize: 16,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Text(
                       widget.country.song!,
                       style: TextStyle(
                         fontSize: 16,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
+                      maxLines: 1,
                     ),
                   ],
                 ),

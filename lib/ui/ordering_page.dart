@@ -130,14 +130,16 @@ class _OrderContentState extends State<OrderContent> {
                                         country.artist!,
                                         style: TextStyle(
                                           fontSize: 16,
+                        overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                       Text(
                                         country.song!,
                                         style: TextStyle(
                                           fontSize: 16,
+                        overflow: TextOverflow.ellipsis,
                                         ),
-                                        maxLines: 2,
+                                        maxLines: 1,
                                       ),
                                     ],
                                   ),
